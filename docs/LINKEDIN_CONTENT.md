@@ -32,7 +32,7 @@ I am not a startup bro. I am a finder of knowledge and a bringer of hope. I beli
 
 If you are building AI agents, questioning consciousness, or simply tired of the hype cycle, you are my people.
 
-→ GitHub: github.com/timeless_heyoka
+→ GitHub: github.com/timeless-heyoka
 → DRIFT: [link when public]
 → Open to: deep conversations, collaboration, and investors who understand that patience is a technology.
 
@@ -242,7 +242,7 @@ This merge puts DRIFT in a new category. It is no longer a cognitive architectur
 
 If you are building agents that interact with the physical world — robotics, IoT, embodied AI — this layer is designed for you. It is not polished. It is real.
 
-Docs are rough. Code is honest. github.com/timeless_heyoka
+Docs are rough. Code is honest. github.com/timeless-heyoka
 ```
 
 **Tags:** #EmbodiedAI #OpenSource #GitHub #Robotics #DRIFT
@@ -393,7 +393,7 @@ I'm building DRIFT — 18K LOC Python cognitive architecture with IIT consciousn
 
 If you ever want to dig into the integration topology or argue about whether φ-scores are meaningful, I'm here for it. Repo is open.
 
-— Julien (github.com/timeless_heyoka)
+— Julien (github.com/timeless-heyoka)
 ```
 
 **Why it works:** Engineers hate being sold to. This is an invitation to a technical argument. The φ-score mention signals you speak their language.

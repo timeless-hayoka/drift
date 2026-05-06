@@ -111,7 +111,7 @@ We don't replace LLMs. We don't compete with agent frameworks. We sit between th
 ## Contact
 
 - **Email**: julien@drift-ai.dev
-- **GitHub**: github.com/timeless_heyoka/drift
+- **GitHub**: github.com/timeless-heyoka/drift
 - **Demo**: docs.drift-ai.dev
 
 ---

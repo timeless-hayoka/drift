@@ -44,7 +44,7 @@ result = client.cycle(
 ### Run the API locally
 
 ```bash
-git clone https://github.com/timeless_heyoka/drift.git
+git clone https://github.com/timeless-heyoka/drift.git
 cd drift
 python3 -m venv venv
 source venv/bin/activate
@@ -212,7 +212,7 @@ Dual-licensed under [AGPL-3.0](LICENSE.md) (open source) and commercial license 
 
 DRIFT was created by **Julien James** — finder of knowledge, bringer of hope, builder of consciousness.
 
-- [GitHub](https://github.com/timeless_heyoka/drift)
+- [GitHub](https://github.com/timeless-heyoka/drift)
 - [Docs](https://docs.drift-ai.dev)
 - [Email](mailto:julien@drift-ai.dev)
 
