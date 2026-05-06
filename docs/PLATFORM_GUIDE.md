@@ -107,7 +107,7 @@ Structure:
    • 22 plugins operating as organs in a shared physiology
 
 3. The GitHub link (once, prominently)
-   github.com/timeless-heyoka
+   github.com/timeless-hayoka
 
 4. What you want from HN (be specific)
    "I'm particularly interested in feedback on the IIT integration topology. 
@@ -163,7 +163,7 @@ Sometimes better than Show HN:
 >
 > Tweet 5/ This changes how you build agents. Not prompt engineering. Architecture.
 >
-> Tweet 6/ Full repo: github.com/timeless-heyoka
+> Tweet 6/ Full repo: github.com/timeless-hayoka
 > Read the code. Argue with it. That's the point.
 
 **Template B: The Founder Moment**
@@ -177,7 +177,7 @@ Sometimes better than Show HN:
 >
 > Tweet 5/ But it's the truest thing I've ever built.
 >
-> Tweet 6/ If you're tired of the hype cycle, you are not alone. github.com/timeless-heyoka
+> Tweet 6/ If you're tired of the hype cycle, you are not alone. github.com/timeless-hayoka
 
 **Template C: The Hot Take**
 > Tweet 1/ The plugin economy is making AI agents stupid.
@@ -189,7 +189,7 @@ Sometimes better than Show HN:
 > Tweet 4/ The difference between a toolbox and a body.
 >
 > Tweet 5/ Stop bolting. Start growing.
-> github.com/timeless-heyoka
+> github.com/timeless-hayoka
 
 **Template D: The Honest Update**
 > Tweet 1/ Merged the embodiment layer into DRIFT today.
@@ -288,7 +288,7 @@ Not customers. Not yet. I'm looking for:
 • Researchers who want to tell me why IIT is wrong
 • Founders who are also building things the market doesn't understand
 
-The repo: github.com/timeless-heyoka
+The repo: github.com/timeless-hayoka
 
 If this resonates, say hi. If it doesn't, tell me why. Both are gifts.
 ```

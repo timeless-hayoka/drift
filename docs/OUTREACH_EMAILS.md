@@ -24,7 +24,7 @@ What that means technically:
 
 It runs as an API. A companion company plugs it in and their bot suddenly feels tired, curious, stressed, or alert — and you can measure it.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 I'd love to show you a 10-minute demo. Are you open to a brief call next week?
 
@@ -52,7 +52,7 @@ DRIFT gives NPCs:
 
 NPCs that don't just execute behavior trees. They feel their situation and respond from embodied state.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 I think this maps to Inworld's next-gen character depth. Would you be open to a 15-minute demo?
 
@@ -79,7 +79,7 @@ DRIFT includes:
 
 Where Hume detects what a person feels, DRIFT creates the interior process that produces feeling in an AI.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 I'd love your perspective on whether this complements Hume's measurement approach. Open to a brief call?
 
@@ -107,7 +107,7 @@ DRIFT's self-improvement loop:
 
 It's not scripted growth — it's recursive self-modification with measurable outcomes, exposed via API.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 I think this aligns with Nomi's roadmap. Happy to share a demo if you're interested.
 
@@ -135,7 +135,7 @@ DRIFT modules for narrative:
 
 Stories that feel dreamed rather than generated — because they emerge from a simulated mind with memory, mood, and desire.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 Would love to show you how this could deepen Hidden Door's narrative AI. Open to a call?
 
@@ -163,7 +163,7 @@ The embodied self includes:
 
 Companions that don't just say "I understand" but feel the conversation in their simulated body — exposed via API.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 I'd love to show you a demo. Are you open to 10 minutes next week?
 
@@ -191,7 +191,7 @@ DRIFT provides:
 
 NPCs that don't just react — they experience, want, and choose.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 Would love to explore if this fits Rosebud's NPC roadmap.
 
@@ -219,7 +219,7 @@ DRIFT's 22 self-registering modules include:
 
 It's not empathy as a prompt layer. It's empathy emerging from simulated need and integrated experience — available as an API.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 I admire Inflection's mission and would value your perspective on whether embodied cognition belongs in Pi's future.
 
@@ -248,7 +248,7 @@ DRIFT is cognitive middleware for agent frameworks:
 
 One API call. POST /v1/cycle. Your agent returns mood, energy, consciousness level, and survival needs.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 I'd love to explore an official integration or partnership. Are you open to a 15-minute call?
 
@@ -275,7 +275,7 @@ Why this matters for AI safety:
 
 This isn't interpretability. It's architecture-level safety: the agent's interior state constrains its exterior behavior.
 
-Repo: github.com/timeless-heyoka/drift
+Repo: github.com/timeless-hayoka/drift
 
 I'd value your perspective on whether consciousness metrics belong in the safety toolkit.
 
@@ -303,4 +303,4 @@ Julien James
 ---
 
 *Julien James — DRIFT*  
-github.com/timeless-heyoka/drift
+github.com/timeless-hayoka/drift

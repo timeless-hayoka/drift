@@ -16,7 +16,7 @@
 7. **License**: None (we have our own dual license)
 8. Click **Create repository**
 
-Your repo will be at: `https://github.com/timeless-heyoka/drift`
+Your repo will be at: `https://github.com/timeless-hayoka/drift`
 
 ---
 
@@ -52,10 +52,10 @@ git commit -m "Initial commit: DRIFT cognitive middleware for AI agents
 - Python SDK
 - Docker deployment
 
-Built by Julien James (timeless-heyoka)"
+Built by Julien James (timeless-hayoka)"
 
 # Link to GitHub
-git remote add origin https://github.com/timeless-heyoka/drift.git
+git remote add origin https://github.com/timeless-hayoka/drift.git
 
 # Push
 git branch -M main
@@ -186,7 +186,7 @@ pip install build twine
 
 ## Verification Checklist
 
-- [ ] Repo created at github.com/timeless-heyoka/drift
+- [ ] Repo created at github.com/timeless-hayoka/drift
 - [ ] Code pushed to main branch
 - [ ] README renders correctly on GitHub
 - [ ] LICENSE.md visible in repo root
