@@ -1,15 +1,35 @@
-# DRIFT API Documentation
+# DRIFT HTTP API
 
-Base URL: `http://localhost:8080/v1`
+Your model returns text. **DRIFT returns state** you can log, gate, and fold into the next turn: mood, Φ, what won the attentional lottery, how the drives look, and what memory surfaced. This page is the **contract cheat sheet** for integrators. For field-accurate schemas, open the interactive **OpenAPI UI** at `/docs` on a running server—those definitions win if this file lags.
 
-All endpoints except `/health` require an API key via the `X-API-Key` header.
+**Base URL:** `http://127.0.0.1:8080/v1` (match your host; Docker and `.env` usually use port `8080`).
+
+**Authentication:** When `DRIFT_API_KEY` is set in the environment, send it as header `X-API-Key`. If that variable is **empty**, the API stays open for local demos—fine on your laptop, not on the public internet.
+
+---
+
+## When to use which endpoint
+
+| You want to… | Call | Reason |
+|----------------|------|--------|
+| Run a full cognitive “tick”: input in, workspace + Φ + drives (+ intuition when available) out | `POST /v1/cycle` | One shot for orchestrators wrapping DRIFT around your LLM |
+| Read subjective state **without** running a cycle (dashboards, guards) | `GET /v1/being` | Cheaper than `/cycle` when you only need “how is it doing?” |
+| Apply something that happened in the world—user message, gratitude, friction—into being state | `POST /v1/being/interact` | Between cycles; use when the environment changed |
+| Track integration / “how awake is this run?” for telemetry or safety heuristics | `GET /v1/being/phi` | Φ is your coarse integration gauge |
+| Store text worth recalling (preferences, lessons, tagged facts) | `POST /v1/memory/save` | Writes into semantic memory |
+| Retrieve by meaning, not only by thread ID | `POST /v1/memory/query` | Hybrid-ranked recall over Chroma |
+| Inspect survival needs before you throttle, escalate, or hand off to a human | `GET /v1/homeostasis` | Ops: see deficits before you act |
+| Apply a deliberate regulatory nudge once you already chose *what* to fix | `POST /v1/homeostasis/regulate` | Avoid spamming; pair with policy in your app |
+| Prove the process is alive after deploy or chaos | `GET /v1/health` | Plugins registered, uptime, “is the brain mounted?” |
+
+**Rule of thumb:** If you wire only one route on day one, make it **`POST /v1/cycle`**. Add the others when you separate **reads**, **memory**, or **operations**.
 
 ---
 
 ## Authentication
 
 ```bash
-curl -H "X-API-Key: drift_your_key_here" http://localhost:8080/v1/being?agent_id=agent-1
+curl -H "X-API-Key: drift_your_key_here" "http://127.0.0.1:8080/v1/being?agent_id=agent-1"
 ```
 
 ---
@@ -353,7 +373,7 @@ See [SDK documentation](../drift/sdk/) for Python client usage.
 ```python
 from drift import DriftClient
 
-client = DriftClient(api_key="drift_...")
+client = DriftClient(api_key="drift_...", base_url="http://127.0.0.1:8080")
 result = client.cycle(agent_id="my-agent", input="Hello")
 print(result["phi"])
 ```
