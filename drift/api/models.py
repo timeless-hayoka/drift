@@ -69,7 +69,16 @@ class MemoryQueryRequest(BaseModel):
 class HomeostasisResponse(BaseModel):
     """Current homeostatic state of an agent."""
 
-    needs: Dict[str, Dict[str, float]]
+    needs: Dict[str, Dict[str, Any]]
+    crisis_mode: bool = False
+    allostatic_load: float = 0.0
+    last_regulation: str = ""
+
+
+class HomeostasisRegulateRequest(BaseModel):
+    """Trigger one regulatory step for an agent (after needs are refreshed)."""
+
+    agent_id: str
 
 
 class HealthResponse(BaseModel):

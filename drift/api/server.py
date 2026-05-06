@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
 
-from drift.api.routes import being, cycle, health, memory
+from drift.api.routes import being, cycle, health, homeostasis, memory
 
 
 @asynccontextmanager
@@ -108,6 +108,7 @@ app.include_router(health.router, prefix="/v1")
 app.include_router(cycle.router, prefix="/v1")
 app.include_router(being.router, prefix="/v1")
 app.include_router(memory.router, prefix="/v1")
+app.include_router(homeostasis.router, prefix="/v1")
 
 
 if __name__ == "__main__":

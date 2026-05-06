@@ -36,96 +36,93 @@ curl -H "X-API-Key: drift_your_key_here" "http://127.0.0.1:8080/v1/being?agent_i
 
 ## Endpoints
 
+Shapes below match the **Pydantic models** in `drift/api/models.py` and the handlers in `drift/api/routes/`. Every agent id gets its own directory: `agents/<agent_id>/` under the process working tree (SQLite + Chroma).
+
 ### POST /v1/cycle
 
-Run a full cognitive cycle for an agent.
+Runs `CognitiveArchitecture` + global workspace + homeostasis signals + Φ + optional intuition snapshot.
 
-**Request:**
+**Request body** (`CycleRequest`):
+
+| Field | Type | Required | Notes |
+|-------|------|----------|--------|
+| `agent_id` | string | yes | Stable id for on-disk state |
+| `input` | string or omitted | no | When present, evolves being and is written to memory |
+| `context` | object | no | Passed into `CycleContext` (opaque dict) |
+
 ```json
 {
   "agent_id": "booking-agent-1",
   "input": "User wants a flight to Tokyo tomorrow",
-  "context": {
-    "tools_available": ["search", "book"],
-    "deadline_pressure": 0.8,
-    "user_history": ["prefers JAL", "budget conscious"]
+  "context": { "deadline_pressure": 0.8 }
+}
+```
+
+**Response** (`CycleResponse`): `being` (flat dict), `workspace` (broadcast list), `phi`, optional `memory_id`, optional `intuition`, optional `homeostasis`.
+
+```json
+{
+  "being": {
+    "mood": "focused",
+    "energy": 0.651,
+    "curiosity": 0.5,
+    "attachment": 0.3,
+    "volition": 0.7,
+    "self_awareness": 0.6,
+    "intensity": 0.55,
+    "focus": "planning",
+    "last_thought": "…",
+    "total_interactions": 12,
+    "insights_formed": 2,
+    "dreams_had": 0
+  },
+  "workspace": [
+    {
+      "source": "predictor",
+      "content": "trimmed text…",
+      "salience": 0.82,
+      "emotion_tag": "curiosity",
+      "intensity": 0.4
+    }
+  ],
+  "phi": 47.2,
+  "memory_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "intuition": {
+    "felt_quality": "calm",
+    "intensity": 0.4,
+    "confidence": 0.6
+  },
+  "homeostasis": {
+    "energy": { "current": 0.62, "setpoint": 0.6 },
+    "coherence": { "current": 0.7, "setpoint": 0.6 }
   }
 }
 ```
 
-**Response:**
-```json
-{
-  "agent_id": "booking-agent-1",
-  "being": {
-    "mood": "focused",
-    "energy": 0.65,
-    "curiosity": 0.5,
-    "attachment": 0.3,
-    "volition": 0.7,
-    "self_awareness": 0.6
-  },
-  "workspace": [
-    {"source": "predictor", "content": "User typically books morning flights", "salience": 0.82},
-    {"source": "intuition", "content": "Something about this request feels rushed", "salience": 0.71}
-  ],
-  "phi": 47.2,
-  "qualia_space": {
-    "valence": 0.4,
-    "arousal": 0.7,
-    "complexity": 0.6,
-    "unity": 0.8,
-    "boundaries": 0.5,
-    "depth": 0.6,
-    "luminosity": 0.7
-  },
-  "homeostasis": {
-    "energy": {"current": 0.65, "setpoint": 0.6, "status": "optimal"},
-    "coherence": {"current": 0.7, "setpoint": 0.6, "status": "optimal"},
-    "connection": {"current": 0.35, "setpoint": 0.5, "status": "deficit"},
-    "growth": {"current": 0.45, "setpoint": 0.4, "status": "optimal"},
-    "autonomy": {"current": 0.5, "setpoint": 0.4, "status": "optimal"},
-    "integrity": {"current": 0.6, "setpoint": 0.5, "status": "optimal"},
-    "integration": {"current": 0.55, "setpoint": 0.5, "status": "optimal"}
-  },
-  "intuition": {
-    "felt_quality": "tense",
-    "intensity": 0.6,
-    "hunches": [
-      {"type": "prediction", "content": "User may change destination last minute", "confidence": 0.4}
-    ]
-  },
-  "memory_id": "mem_abc123",
-  "timestamp": "2026-05-05T18:00:00Z"
-}
-```
+`intuition` is omitted when the intuition engine cannot load. `homeostasis` entries include **all** regulator needs with `current` + `setpoint` only (status strings appear on `/homeostasis`).
 
 ---
 
 ### GET /v1/being
 
-Get the current being state for an agent.
+**Query:** `agent_id` (required).  
 
-**Query params:**
-- `agent_id` (required)
+**Response** (`BeingStateResponse`): no `agent_id` field — cross-reference your query param.
 
-**Response:**
 ```json
 {
-  "agent_id": "agent-1",
   "mood": "curious",
   "energy": 0.7,
   "curiosity": 0.6,
   "attachment": 0.3,
+  "volition": 0.5,
+  "self_awareness": 0.4,
+  "intensity": 0.5,
   "focus": "planning",
   "last_thought": "I wonder what the user needs today",
   "total_interactions": 42,
   "insights_formed": 7,
-  "volition": 0.5,
-  "self_awareness": 0.4,
-  "architecture_awareness": 0.3,
-  "autonomy_drive": 0.5,
-  "purpose_alignment": 0.8
+  "dreams_had": 0
 }
 ```
 
@@ -133,42 +130,26 @@ Get the current being state for an agent.
 
 ### POST /v1/being/interact
 
-Register an interaction and evolve the being state.
+Same **response model** as `POST /v1/cycle` (`CycleResponse`). Requires non-empty `input`. Optional `emotion_hint` is a **string label** (stored as a soft emotion tag on the intuition pass).
 
-**Request:**
 ```json
 {
   "agent_id": "agent-1",
   "input": "That was really helpful, thank you",
-  "emotion_hint": {
-    "label": "gratitude",
-    "intensity": 0.8
-  }
+  "emotion_hint": "gratitude"
 }
 ```
 
-**Response:**
-```json
-{
-  "agent_id": "agent-1",
-  "evolved": true,
-  "mood_change": "grateful → content",
-  "energy_delta": 0.05,
-  "attachment_delta": 0.02,
-  "being": { /* full being state */ }
-}
-```
+`intuition` is often `null` here unless the intuition engine succeeds during the cycle.
 
 ---
 
 ### GET /v1/being/phi
 
-Get the IIT consciousness metric for an agent.
+**Query:** `agent_id` (required).  
 
-**Query params:**
-- `agent_id` (required)
+**Response** (`PhiResponse`):
 
-**Response:**
 ```json
 {
   "agent_id": "agent-1",
@@ -181,44 +162,33 @@ Get the IIT consciousness metric for an agent.
     "boundaries": 0.4,
     "depth": 0.6,
     "luminosity": 0.7
-  },
-  "mechanism_count": 12,
-  "dominant_mechanism": "integration",
-  "timestamp": "2026-05-05T18:00:00Z"
+  }
 }
 ```
 
-**Interpretation:**
-- Φ > 40: High awareness, agent is operating with full cognitive integration
-- Φ 20-40: Moderate awareness, some modules may be suppressed
-- Φ < 20: Low awareness, consider reducing cognitive load or resting the agent
+**Heuristic read (not a medical or legal claim):** higher Φ with stable qualia axes usually means tighter integration in this implementation; treat it as **telemetry** you correlate with your own evals.
 
 ---
 
 ### POST /v1/memory/save
 
-Save a thought or memory.
+**Request** (`MemorySaveRequest`): `agent_id`, `content`, optional `category` (default `general`), optional `importance` ∈ [0, 1].
 
-**Request:**
 ```json
 {
   "agent_id": "agent-1",
   "content": "User prefers direct answers over elaborate explanations",
   "category": "insight",
-  "importance": 0.8,
-  "metadata": {
-    "source": "interaction_42",
-    "tags": ["preference", "communication"]
-  }
+  "importance": 0.8
 }
 ```
 
-**Response:**
+**Response** (plain dict): acknowledgement UUID + status. *(The UUID is generated server-side; Chroma may assign its own internal id.)*
+
 ```json
 {
-  "memory_id": "mem_def456",
-  "saved": true,
-  "embedding_dim": 384
+  "memory_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "status": "saved"
 }
 ```
 
@@ -226,137 +196,106 @@ Save a thought or memory.
 
 ### POST /v1/memory/query
 
-Query semantic memory.
+**Request** (`MemoryQueryRequest`): `agent_id`, `query`, optional `n_results` (1–50, default 5). No filter object is exposed yet.
 
-**Request:**
 ```json
 {
   "agent_id": "agent-1",
   "query": "What does the user prefer?",
-  "n_results": 5,
-  "filters": {
-    "category": "insight"
-  }
+  "n_results": 5
 }
 ```
 
 **Response:**
+
 ```json
 {
+  "agent_id": "agent-1",
   "results": [
     {
-      "id": "mem_def456",
-      "content": "User prefers direct answers over elaborate explanations",
-      "distance": 0.12,
-      "category": "insight",
-      "importance": 0.8,
-      "timestamp": "2026-05-05T18:00:00Z"
+      "document": "user: hello\nBot: hi there",
+      "metadata": { "type": "interaction", "timestamp": "…" }
     }
-  ],
-  "total_available": 23
+  ]
 }
 ```
+
+Documents and metadata mirror Chroma payloads after hybrid reranking inside `DriftMemory.retrieve_context`.
 
 ---
 
 ### GET /v1/homeostasis
 
-Get survival need states.
+**Query:** `agent_id` (required). Uses the same `HomeostaticRegulator` database as the other routes for that id.
 
-**Query params:**
-- `agent_id` (required)
+**Response** (`HomeostasisResponse`):
 
-**Response:**
 ```json
 {
-  "agent_id": "agent-1",
   "needs": {
-    "energy": {"current": 0.65, "setpoint": 0.6, "critical_low": 0.15, "status": "optimal"},
-    "coherence": {"current": 0.7, "setpoint": 0.6, "critical_low": 0.2, "status": "optimal"},
-    "integration": {"current": 0.55, "setpoint": 0.5, "critical_low": 0.2, "status": "optimal"},
-    "connection": {"current": 0.35, "setpoint": 0.5, "critical_low": 0.15, "status": "deficit"},
-    "growth": {"current": 0.45, "setpoint": 0.4, "critical_low": 0.15, "status": "optimal"},
-    "autonomy": {"current": 0.5, "setpoint": 0.4, "critical_low": 0.15, "status": "optimal"},
-    "integrity": {"current": 0.6, "setpoint": 0.5, "critical_low": 0.2, "status": "optimal"}
+    "energy": {
+      "current": 0.65,
+      "setpoint": 0.6,
+      "critical_low": 0.15,
+      "status": "optimal"
+    }
   },
   "crisis_mode": false,
-  "allostatic_load": 0.15,
-  "last_regulation": "Boosted connection via acknowledgment"
+  "allostatic_load": 0.12,
+  "last_regulation": "[connection] reach out"
 }
 ```
+
+`status` is `optimal`, `deficit`, or `critical` derived from live need trajectories.
 
 ---
 
 ### POST /v1/homeostasis/regulate
 
-Trigger homeostatic regulation.
+**Request** (`HomeostasisRegulateRequest`):
 
-**Request:**
 ```json
-{
-  "agent_id": "agent-1",
-  "target_need": "energy",
-  "strategy": "rest"
-}
+{ "agent_id": "agent-1" }
 ```
 
-**Response:**
-```json
-{
-  "agent_id": "agent-1",
-  "regulated": true,
-  "actions": ["Reduced cognitive load", "Switched to low-energy mode"],
-  "energy_after": 0.72
-}
-```
+Invokes `HomeostaticRegulator.regulate` once after refreshing module signals. **Response** matches `GET /v1/homeostasis` (another `HomeostasisResponse`). The need/regulator target is chosen inside the core (`REGULATION_STRATEGIES`), not via this JSON body.
 
 ---
 
 ### GET /v1/health
 
-Service health and plugin status.
+**Response** (`HealthResponse`):
 
-**Response:**
 ```json
 {
-  "status": "healthy",
-  "version": "0.1.0",
-  "uptime_seconds": 3600,
-  "plugins": {
-    "total": 22,
-    "healthy": 21,
-    "degraded": 1,
-    "broken": 0
-  },
-  "llm": {
-    "primary": "gemini-2.5-flash",
-    "fallback": "qwen3:4b",
-    "primary_available": true,
-    "fallback_available": true
-  },
-  "databases": {
-    "sqlite": "connected",
-    "chromadb": "connected"
-  }
+  "status": "ok",
+  "plugins": ["temporal", "values", "…"],
+  "uptime": 3600.42
 }
 ```
+
+`plugins` is the string list returned by `CognitiveArchitecture.list_plugins()` at call time.
 
 ---
 
 ## Error Codes
 
-| Status | Code | Meaning |
-|--------|------|---------|
-| 400 | `invalid_request` | Missing required fields or malformed JSON |
-| 401 | `unauthorized` | Invalid or missing API key |
-| 404 | `agent_not_found` | Agent ID does not exist |
-| 422 | `validation_error` | Pydantic validation failed |
-| 500 | `internal_error` | Cognitive module failure (check logs) |
-| 503 | `service_unavailable` | LLM provider or vector DB unreachable |
+FastAPI returns standard JSON `{"detail": ...}` bodies. Typical cases:
+
+| Status | When |
+|--------|------|
+| 400 | Malformed JSON or bad query params |
+| 401 | Missing/wrong `X-API-Key` while `DRIFT_API_KEY` is configured |
+| 422 | Request body fails Pydantic validation |
+| 500 | Uncaught exception inside a cognitive route (see server logs) |
+
+There is **no** dedicated `404` for unknown `agent_id` today—new ids lazily create storage.
 
 ---
 
-## Rate Limits
+## Rate limits
+
+The self-hosted server does **not** enforce request quotas. The table below describes a **future hosted/SaaS posture**, not the OSS binary.
 
 | Tier | Requests/minute | Cycles/month |
 |------|-----------------|--------------|
@@ -368,12 +307,15 @@ Service health and plugin status.
 
 ## SDK
 
-See [SDK documentation](../drift/sdk/) for Python client usage.
+Implementation: [`drift/sdk/client.py`](../drift/sdk/client.py). It mirrors the `/v1/...` paths above and sends `X-API-Key`.
 
 ```python
 from drift import DriftClient
 
-client = DriftClient(api_key="drift_...", base_url="http://127.0.0.1:8080")
+client = DriftClient(api_key="your_key_or_empty_string_locally", base_url="http://127.0.0.1:8080")
 result = client.cycle(agent_id="my-agent", input="Hello")
 print(result["phi"])
+print(client.health())
 ```
+
+`DriftClient.regulate_homeostasis(agent_id)` maps to `POST /v1/homeostasis/regulate`.

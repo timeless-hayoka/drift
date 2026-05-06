@@ -2,42 +2,11 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
+from drift.api.agent_context import get_agent_context
 from drift.api.models import BeingStateResponse, CycleResponse, InteractRequest, PhiResponse
 from drift.api.routes.auth import verify_api_key
 
 router = APIRouter(tags=["being"])
-
-
-def _get_agent_context(agent_id: str):
-    """Lazy-initialize per-agent cognitive resources."""
-    from pathlib import Path
-
-    from drift.core.config import PROJECT_ROOT
-    from drift.core.being import Being
-    from drift.core.global_workspace import get_workspace
-    from drift.core.homeostasis import HomeostaticRegulator
-    from drift.core.iit_consciousness import IITConsciousness
-
-    agent_dir = PROJECT_ROOT / "agents" / agent_id
-    agent_dir.mkdir(parents=True, exist_ok=True)
-
-    being = Being(db_path=agent_dir / "being.db")
-    homeo = HomeostaticRegulator(db_path=agent_dir / "homeostasis.db")
-    iit = IITConsciousness(db_path=agent_dir / "iit.db")
-    workspace = get_workspace()
-
-    from drift.core.memory import DriftMemory
-
-    memory = DriftMemory(persist_directory=str(agent_dir / "chroma_db"))
-
-    return {
-        "being": being,
-        "memory": memory,
-        "homeostasis": homeo,
-        "iit": iit,
-        "workspace": workspace,
-        "agent_dir": agent_dir,
-    }
 
 
 @router.get("/being", response_model=BeingStateResponse)
@@ -47,7 +16,7 @@ async def get_being_state(
 ):
     """Return the current subjective state of the specified agent."""
     try:
-        agent = _get_agent_context(agent_id)
+        agent = get_agent_context(agent_id)
         being = agent["being"]
         return BeingStateResponse(
             mood=being.state.mood,
@@ -84,7 +53,7 @@ async def interact(
         import uuid
 
         arch = CognitiveArchitecture()
-        agent = _get_agent_context(req.agent_id)
+        agent = get_agent_context(req.agent_id)
 
         being = agent["being"]
         memory = agent["memory"]
@@ -193,7 +162,7 @@ async def get_phi(
 ):
     """Return the agent's current integrated information (Φ) and qualia space."""
     try:
-        agent = _get_agent_context(agent_id)
+        agent = get_agent_context(agent_id)
         iit = agent["iit"]
         being = agent["being"]
 

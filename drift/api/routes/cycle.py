@@ -1,51 +1,14 @@
 """Cognitive cycle endpoint."""
 
 import uuid
-from typing import Any, Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
+from drift.api.agent_context import get_agent_context
 from drift.api.models import CycleRequest, CycleResponse
 from drift.api.routes.auth import verify_api_key
 
 router = APIRouter(tags=["cycle"])
-
-
-def _get_agent_context(agent_id: str) -> Dict[str, Any]:
-    """Lazy-initialize per-agent cognitive resources.
-
-    Heavy imports (memory, embeddings) are deferred to first use so the
-    server starts quickly regardless of torch / sentence-transformers state.
-    """
-    from pathlib import Path
-
-    from drift.core.config import PROJECT_ROOT
-    from drift.core.being import Being
-    from drift.core.global_workspace import get_workspace
-    from drift.core.homeostasis import HomeostaticRegulator
-    from drift.core.iit_consciousness import IITConsciousness
-
-    agent_dir = PROJECT_ROOT / "agents" / agent_id
-    agent_dir.mkdir(parents=True, exist_ok=True)
-
-    being = Being(db_path=agent_dir / "being.db")
-    homeo = HomeostaticRegulator(db_path=agent_dir / "homeostasis.db")
-    iit = IITConsciousness(db_path=agent_dir / "iit.db")
-    workspace = get_workspace()
-
-    # Heavy import deferred to first use
-    from drift.core.memory import DriftMemory
-
-    memory = DriftMemory(persist_directory=str(agent_dir / "chroma_db"))
-
-    return {
-        "being": being,
-        "memory": memory,
-        "homeostasis": homeo,
-        "iit": iit,
-        "workspace": workspace,
-        "agent_dir": agent_dir,
-    }
 
 
 @router.post("/cycle", response_model=CycleResponse)
@@ -64,7 +27,7 @@ async def run_cycle(
         from drift.core.cognitive_architecture import CognitiveArchitecture, CycleContext
 
         arch = CognitiveArchitecture()
-        agent = _get_agent_context(req.agent_id)
+        agent = get_agent_context(req.agent_id)
 
         being = agent["being"]
         memory = agent["memory"]
