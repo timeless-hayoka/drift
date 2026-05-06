@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drift-cognition"
+version = "0.1.0"
+description = "Cognitive middleware for AI agents — consciousness, embodiment, homeostasis, intuition"
+readme = "docs/README.md"
+license = {text = "AGPL-3.0"}
+authors = [
+    {name = "Julien James", email = "julien@drift-ai.dev"}
+]
+keywords = ["ai", "agents", "cognitive-architecture", "consciousness", "embodiment", "homeostasis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.136",
+    "uvicorn>=0.46",
+    "pydantic>=2.13",
+    "chromadb>=1.5",
+    "sentence-transformers>=3.0",
+    "torch>=2.11",
+    "transformers>=4.57",
+    "google-generativeai>=0.8",
+    "ollama>=0.6",
+    "numpy>=2.4",
+    "httpx>=0.28",
+    "python-dotenv>=1.2",
+    "rich>=15.0",
+    "sse-starlette>=3.4",
+    "markdown>=3.10",
+    "PyYAML>=6.0",
+    "tenacity>=9.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.28",
+]
+voice = [
+    "piper-tts>=1.4",
+    "sounddevice",
+    "soundfile",
+]
+demos = [
+    "crewai>=0.100",
+    "langchain>=0.3",
+]
+
+[project.scripts]
+drift-api = "drift.api.server:main"
+drift-seed = "drift.core.seed_cognition:main"
+
+[project.urls]
+Homepage = "https://github.com/drift-ai/drift"
+Documentation = "https://docs.drift-ai.dev"
+Repository = "https://github.com/drift-ai/drift"
+Issues = "https://github.com/drift-ai/drift/issues"

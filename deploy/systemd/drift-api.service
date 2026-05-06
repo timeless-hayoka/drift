@@ -1,0 +1,31 @@
+# DRIFT API — Systemd user service
+# --------------------------------
+# Install:
+#   sudo cp drift-api.service /etc/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now drift-api
+#
+# Logs:
+#   journalctl --user -u drift-api -f
+
+[Unit]
+Description=DRIFT Cognitive Middleware API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/drift
+EnvironmentFile=-/etc/drift/env
+ExecStart=%h/.local/bin/uvicorn drift.api.server:app --host 0.0.0.0 --port 8080
+Restart=on-failure
+RestartSec=5
+
+# Security hardening (optional, relax as needed)
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=%h/drift
+
+[Install]
+WantedBy=default.target

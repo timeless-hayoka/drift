@@ -1,0 +1,58 @@
+# DRIFT — Local production stack
+# ------------------------------
+#   docker compose -f deploy/docker-compose.yml up --build
+
+version: "3.9"
+
+services:
+  drift-api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: drift-api
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../.env
+    environment:
+      - DRIFT_CHROMA_HOST=chromadb
+      - DRIFT_CHROMA_PORT=8000
+      - DRIFT_REDIS_HOST=redis
+      - DRIFT_REDIS_PORT=6379
+    networks:
+      - drift-net
+    depends_on:
+      - chromadb
+      - redis
+    restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: drift-chroma
+    volumes:
+      - drift-chroma-data:/chroma/chroma
+    ports:
+      - "8001:8000"
+    networks:
+      - drift-net
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: drift-redis
+    volumes:
+      - drift-redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - drift-net
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+volumes:
+  drift-chroma-data:
+  drift-redis-data:
+
+networks:
+  drift-net:
+    driver: bridge
