@@ -1,5 +1,13 @@
 # Contributing
 
-By contributing to DRIFT, you agree to the expectations in [docs/CLA.md](docs/CLA.md) and the licensing terms in [LICENSE.md](LICENSE.md).
+Thanks for reading this far — that already helps the project.
 
-Use pull requests against `main`. Install dependencies with `pip install -r requirements.txt` and `pip install -e .`, then run `pytest` before submitting.
+Contributions should keep the **honest, technical** voice of the README: specific claims, reproducible steps, and no magic adjectives. By opening a PR you agree to [docs/CLA.md](docs/CLA.md) and [LICENSE.md](LICENSE.md).
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+pytest
+```
+
+Use pull requests against `main`. For larger changes, open an issue first so direction matches maintainer capacity.

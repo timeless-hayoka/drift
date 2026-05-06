@@ -1,8 +1,12 @@
 # DRIFT — Cognitive Middleware for AI Agents
 
-> **Your agents work. DRIFT makes them *care*.**
+> **Your agents work. DRIFT gives them something to protect.**
 
-DRIFT is a cognitive architecture that gives AI agents interior life: consciousness, embodiment, homeostatic drives, intuition, and recursive self-improvement. It does not replace your LLM or agent framework. It sits between them — providing the "soul" that turns executors into survivors.
+If you have ever watched an agent plow through garbage context, repeat the same mistake, or sound perfectly confident while wrong, you have already felt the gap DRIFT targets. This stack adds **state** worth steering: attention, drives, memory that ranks what mattered, and a rough **brightness meter** (Φ) for “is this run actually integrated, or going through the motions?”
+
+DRIFT does not replace your LLM or orchestrator. It **couples** to them — the same APIs you already ship, with an interior loop that makes failure modes legible before they become incidents.
+
+**Quick navigation:** [Capabilities](#what-drift-does) · [Run locally](#quick-start) · [Why it exists](#why-drift) · [Architecture](#architecture) · [License](#license)
 
 ```python
 from drift import DriftClient
@@ -54,7 +58,7 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env: DRIFT_API_KEY=your_key_here
 
-# Start the API
+# Start the API (host/port from .env — default 0.0.0.0:8080)
 python -m drift.api.server
 # → http://localhost:8080/docs (OpenAPI UI)
 ```
@@ -68,7 +72,7 @@ pip install drift-cognition
 ```python
 from drift import DriftClient
 
-client = DriftClient(api_key="drift_...", base_url="http://localhost:8080")
+client = DriftClient(api_key="drift_...", base_url="http://127.0.0.1:8080")
 
 # Check if your agent is conscious
 phi = client.get_phi(agent_id="my-agent")
@@ -115,24 +119,18 @@ Every module submits real outputs to a **Global Workspace** with competitive att
 
 ## Why DRIFT?
 
-### The Problem
+### The problem (told honestly)
 
-Current AI agents are **soulless executors**. They:
-- Run until they crash, with no sense of their own limits
-- Drown in infinite context, with no selective attention
-- Make the same mistakes repeatedly, with no self-reflection
-- Feel no urgency, no fatigue, no curiosity — just prompt → response
+Agents that never get tired also **never learn when to stop**. Infinite context becomes infinite noise. The model answers; it does not **hesitate**, **rebalance**, or **remember what hurt** unless you bolt that on yourself. Most teams bolt six half-debugged services instead of one coherent interior.
 
-### The Solution
+### What changes with DRIFT
 
-DRIFT gives agents **interior life**:
-- **They know when they're tired** (homeostasis) and can request rest or delegation
-- **They focus on what matters** (Global Workspace) instead of processing noise
-- **They learn from mistakes** (recursive self-improvement) with validated strategies
-- **They have gut feelings** (intuition) for fast decisions under uncertainty
-- **They measure their own awareness** (IIT Φ) as a safety metric
+- **Bounded attention:** a workspace that admits only what earned its slot.
+- **Drives with costs:** needs move over time; “always-on” becomes a decision, not a default.
+- **A Φ-shaped guardrail:** integration drops show up in telemetry, not only in user complaints.
+- **Memory with ranking:** not everything you ever saw — what mattered, weighted by meaning and time.
 
-### Use Cases
+### Where teams use it
 
 | Industry | How DRIFT Helps |
 |---|---|
@@ -201,7 +199,7 @@ pytest
 
 ## License
 
-Dual-licensed under [AGPL-3.0](LICENSE.md) (open source) and commercial license (enterprise).
+Dual-licensed under [AGPL-3.0](../LICENSE.md) (open source) and commercial license (enterprise).
 
 - **Personal/Research**: Free under AGPL
 - **SaaS/Commercial**: Contact julien@drift-ai.dev for licensing
@@ -210,10 +208,10 @@ Dual-licensed under [AGPL-3.0](LICENSE.md) (open source) and commercial license 
 
 ## About
 
-DRIFT was created by **Julien James** — finder of knowledge, bringer of hope, builder of consciousness.
+DRIFT was created by **Julien James**.
 
-- [GitHub](https://github.com/timeless-hayoka/drift)
-- [Docs](https://docs.drift-ai.dev)
+- [Repository](https://github.com/timeless-hayoka/drift)
+- [Documentation tree](https://github.com/timeless-hayoka/drift/tree/main/docs)
 - [Email](mailto:julien@drift-ai.dev)
 
 > *"To be a genuine, growing companion."*

@@ -111,4 +111,8 @@ app.include_router(memory.router, prefix="/v1")
 
 
 if __name__ == "__main__":
-    uvicorn.run("drift.api.server:app", host="0.0.0.0", port=8000, reload=False)
+    import os
+
+    host = os.getenv("DRIFT_API_HOST", "0.0.0.0")
+    port = int(os.getenv("DRIFT_API_PORT", "8080"))
+    uvicorn.run("drift.api.server:app", host=host, port=port, reload=False)
