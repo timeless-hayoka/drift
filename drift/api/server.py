@@ -8,8 +8,9 @@ and sentence-transformers are deferred to first request.
 import time
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import uvicorn
 
 from drift.api.routes import being, cycle, health, memory
@@ -66,6 +67,33 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+legacy = APIRouter(prefix="/api")
+
+
+@legacy.get("/health")
+async def legacy_health():
+    """Minimal health check without auth (legacy bot compatibility)."""
+    return {"ok": True}
+
+
+@legacy.get("/tools")
+async def legacy_tools():
+    from drift.core.tools import build_tool_prompt
+
+    return {"reply": build_tool_prompt()}
+
+
+@legacy.post("/chat")
+async def legacy_chat(request: Request):
+    try:
+        await request.json()
+    except Exception:
+        return JSONResponse(
+            status_code=400,
+            content={"error": "invalid JSON in request body"},
+        )
+    return JSONResponse({"reply": ""})
+
 # CORS enabled for demo purposes
 app.add_middleware(
     CORSMiddleware,
@@ -75,6 +103,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(legacy)
 app.include_router(health.router, prefix="/v1")
 app.include_router(cycle.router, prefix="/v1")
 app.include_router(being.router, prefix="/v1")

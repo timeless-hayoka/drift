@@ -15,5 +15,7 @@ sse-starlette>=3.4
 markdown>=3.10
 PyYAML>=6.0
 tenacity>=9.1
+sounddevice>=0.5
+soundfile>=0.13
 pytest>=9.0
 pytest-asyncio>=0.24

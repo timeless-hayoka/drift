@@ -7,7 +7,7 @@ name = "drift-cognition"
 version = "0.1.0"
 description = "Cognitive middleware for AI agents — consciousness, embodiment, homeostasis, intuition"
 readme = "docs/README.md"
-license = {text = "AGPL-3.0"}
+license = "AGPL-3.0"
 authors = [
     {name = "Julien James", email = "julien@drift-ai.dev"}
 ]
@@ -15,7 +15,6 @@ keywords = ["ai", "agents", "cognitive-architecture", "consciousness", "embodime
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -46,6 +45,8 @@ dev = [
     "pytest>=9.0",
     "pytest-asyncio>=0.24",
     "httpx>=0.28",
+    "sounddevice>=0.5",
+    "soundfile>=0.13",
 ]
 voice = [
     "piper-tts>=1.4",
@@ -62,7 +63,16 @@ drift-api = "drift.api.server:main"
 drift-seed = "drift.core.seed_cognition:main"
 
 [project.urls]
-Homepage = "https://github.com/drift-ai/drift"
-Documentation = "https://docs.drift-ai.dev"
-Repository = "https://github.com/drift-ai/drift"
-Issues = "https://github.com/drift-ai/drift/issues"
+Homepage = "https://github.com/timeless-hayoka/drift"
+Documentation = "https://github.com/timeless-hayoka/drift/tree/main/docs"
+Repository = "https://github.com/timeless-hayoka/drift"
+Issues = "https://github.com/timeless-hayoka/drift/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["drift*"]
+
+[tool.pytest.ini_options]
+pythonpath = [".", "drift/core", "drift/core/plugins"]
+asyncio_mode = "strict"
+testpaths = ["tests"]

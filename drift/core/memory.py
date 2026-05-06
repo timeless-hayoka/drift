@@ -8,7 +8,11 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 from drift.core.config import PERSIST_DIRECTORY
-from embeddings import get_default_embedding_function, LocalEmbeddingFunction, SemanticEmbeddingFunction
+from drift.core.embeddings import (
+    get_default_embedding_function,
+    LocalEmbeddingFunction,
+    SemanticEmbeddingFunction,
+)
 
 
 # ── Secret scrubbing ──────────────────────────────────────────────
