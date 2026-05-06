@@ -96,4 +96,4 @@ By contributing to DRIFT, you agree that your contributions will be licensed und
 
 ---
 
-*For questions about licensing, email julien@drift-ai.dev*
+*For questions about licensing, email hiimju9@gmail.com*

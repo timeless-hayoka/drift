@@ -43,7 +43,7 @@ By submitting a pull request to the Project, You agree to the terms of this CLA.
 
 ### 8. Questions
 
-Contact: julien@drift-ai.dev
+Contact: hiimju9@gmail.com
 
 ---
 
