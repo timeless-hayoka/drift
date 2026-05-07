@@ -13,6 +13,7 @@ Key principles implemented:
 """
 
 import logging
+import os
 import random
 import sqlite3
 import threading
@@ -76,6 +77,7 @@ class GlobalWorkspace:
         self._load_state()
 
     def _init_db(self):
+        os.makedirs(os.path.dirname(self.db_path) or ".", exist_ok=True)
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS workspace_history (

@@ -7,6 +7,13 @@ from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+try:
+    import sounddevice as _sd
+    _sd.query_devices()
+    HAS_PORTAUDIO = True
+except Exception:
+    HAS_PORTAUDIO = False
+
 
 class TestVoiceHelpers(unittest.TestCase):
     @patch("voice._get_whisper")
@@ -51,6 +58,7 @@ class TestVoiceHelpers(unittest.TestCase):
         self.assertIsInstance(result, bytes)
         self.assertGreater(len(result), 0)
 
+    @unittest.skipUnless(HAS_PORTAUDIO, "PortAudio not available in this environment")
     def test_record_audio_mocked(self):
         with patch("sounddevice.rec") as mock_rec, patch("sounddevice.wait") as mock_wait:
             import numpy as np
