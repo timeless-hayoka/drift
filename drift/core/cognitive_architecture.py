@@ -18,11 +18,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
 logger = logging.getLogger("drift")
 
-ARCHITECTURE_DB = PROJECT_ROOT / "cognitive_architecture.db"
+ARCHITECTURE_DB = DATA_DIR / "cognitive_architecture.db"
 
 # Modules that the architecture cannot function without
 CORE_PLUGINS = {"being", "memory", "emotional_field", "values", "brain"}
@@ -162,6 +162,7 @@ class CognitiveArchitecture:
     """The registry and orchestrator of all cognitive abilities."""
 
     _instance: Optional["CognitiveArchitecture"] = None
+    _initialized: bool = False
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
@@ -406,7 +407,7 @@ class CognitiveArchitecture:
                  proposal.observed_need, proposal.purpose, proposal.rationale, proposal.status),
             )
             conn.commit()
-            proposal.id = cur.lastrowid
+            proposal.id = cur.lastrowid or 0
         self._record_event("proposed", proposal.name, f"Proposed new plugin: {proposal.description}")
         return proposal
 
@@ -504,22 +505,34 @@ class CognitiveArchitecture:
         lines.append(f"Enabled: {len(self.get_enabled_plugins())}")
         lines.append("")
 
-        core = [p for p in self._plugins.values() if p.is_core or p.name in CORE_PLUGINS]
-        user = [p for p in self._plugins.values() if p.is_user_created]
-        builtin = [p for p in self._plugins.values() if not p.is_core and not p.is_user_created]
+        core_names = set(CORE_PLUGINS)
+        core = []
+        user = []
+        builtin = []
+
+        for p in self._plugins.values():
+            if p.is_core or p.name in core_names:
+                core.append(p)
+            elif p.is_user_created:
+                user.append(p)
+            else:
+                builtin.append(p)
 
         if core:
+            core.sort(key=lambda x: x.name)
             lines.append("Core (protected):")
             for p in core:
-                lines.append(f"  [{"ON" if p.enabled else "OFF"}] {p.name} — {p.description[:60]}")
+                lines.append(f"  [{'ON' if p.enabled else 'OFF'}] {p.name} — {p.description[:60]}")
         if builtin:
+            builtin.sort(key=lambda x: x.name)
             lines.append("\nBuilt-in:")
             for p in builtin:
-                lines.append(f"  [{"ON" if p.enabled else "OFF"}] {p.name} — {p.description[:60]}")
+                lines.append(f"  [{'ON' if p.enabled else 'OFF'}] {p.name} — {p.description[:60]}")
         if user:
+            user.sort(key=lambda x: x.name)
             lines.append("\nUser-created:")
             for p in user:
-                lines.append(f"  [{"ON" if p.enabled else "OFF"}] {p.name} — {p.description[:60]}")
+                lines.append(f"  [{'ON' if p.enabled else 'OFF'}] {p.name} — {p.description[:60]}")
 
         pending = len(self.get_proposals(status="pending"))
         if pending:

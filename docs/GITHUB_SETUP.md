@@ -24,7 +24,7 @@ Your repo will be at: `https://github.com/timeless-hayoka/drift`
 
 ```bash
 git config --global user.name "Julien James"
-git config --global user.email "hiimju9@gmail.com"
+git config --global user.email "hiimju3@icloud.com"
 ```
 
 ---

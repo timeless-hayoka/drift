@@ -3,17 +3,17 @@ import time
 try:
     from dotenv import load_dotenv
 except Exception:
-    def load_dotenv():
+    def load_dotenv(*args, **kwargs) -> bool:  # type: ignore[misc]
         print("Warning: python-dotenv not installed; proceeding without loading .env file.")
-        return None
+        return False
 
 try:
     import importlib
     new_genai = importlib.import_module("google.genai")
     genai_types = importlib.import_module("google.genai.types")
 except Exception:
-    new_genai = None
-    genai_types = None
+    new_genai = None  # type: ignore[assignment]
+    genai_types = None  # type: ignore[assignment]
 
 legacy_genai = None
 if new_genai is None:

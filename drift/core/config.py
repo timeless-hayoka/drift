@@ -5,14 +5,16 @@ from pathlib import Path
 try:
     from dotenv import load_dotenv
 except Exception:
-    def load_dotenv():
-        pass
+    def load_dotenv(*args, **kwargs) -> bool:  # type: ignore[misc]
+        return False
 
 load_dotenv()
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-PERSIST_DIRECTORY = PROJECT_ROOT / "chroma_db"
-HISTORY_PATH = PROJECT_ROOT / "history.jsonl"
+REPO_ROOT = PROJECT_ROOT.parent.parent
+DATA_DIR = REPO_ROOT / "data"
+PERSIST_DIRECTORY = DATA_DIR / "chroma_db"
+HISTORY_PATH = DATA_DIR / "history.jsonl"
 
 API_KEY = os.getenv("API_KEY") or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 REFLECTION_INTERVAL = int(os.getenv("REFLECTION_INTERVAL", "10"))

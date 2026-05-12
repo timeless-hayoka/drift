@@ -11,9 +11,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-TEMPORAL_DB = PROJECT_ROOT / "temporal.db"
+TEMPORAL_DB = DATA_DIR / "temporal.db"
 
 
 def _format_duration(minutes: float) -> str:

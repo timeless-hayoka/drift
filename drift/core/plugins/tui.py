@@ -7,6 +7,7 @@ import sys
 import threading
 import time
 from datetime import datetime
+from typing import Any, List
 
 from rich.align import Align
 from rich.console import Console
@@ -57,25 +58,25 @@ class DriftTUI:
         return Panel(Align.left(text), height=3, style="on black")
 
     def _make_sidebar(self) -> Panel:
-        lines = []
+        lines: List[Text] = []
         # Health
         health = self.brain.health_check()
         lines.append(Text("Health", style="bold yellow"))
         g = "[green]●[/]" if health["gemini"]["ok"] else "[red]●[/]"
         l = "[green]●[/]" if health["local"]["ok"] else "[red]●[/]"
         lines.append(Text.from_markup(f"  Gemini {g}  Ollama {l}"))
-        lines.append("")
+        lines.append(Text(""))
 
         # Growth
         gp = growth_profile(self.memory, self.state.turns)
         lines.append(Text("Growth", style="bold yellow"))
         lines.append(Text.from_markup(f"  {gp['stage']} ({gp['points']} pts)"))
-        lines.append("")
+        lines.append(Text(""))
 
         # Memory
         lines.append(Text("Memory", style="bold yellow"))
         lines.append(Text(f"  {self.memory.count()} entries"))
-        lines.append("")
+        lines.append(Text(""))
 
         # Reminders
         lines.append(Text("Reminders", style="bold yellow"))
@@ -86,7 +87,7 @@ class DriftTUI:
                 lines.append(Text(f"  • {due} {t.title[:24]}", style="dim"))
         else:
             lines.append(Text("  None", style="dim"))
-        lines.append("")
+        lines.append(Text(""))
 
         # Authorized
         if self.state.authorized_targets:
@@ -98,18 +99,19 @@ class DriftTUI:
         return Panel(content, title="Status", border_style="blue", width=28)
 
     def _make_chat(self) -> Panel:
+        content: Any
         if not self.messages:
             content = Align.center(Text("Start a conversation...", style="dim italic"), vertical="middle")
         else:
-            parts = []
+            parts: List[Text] = []
             for role, text in self.messages[-50:]:
                 if role == "user":
                     parts.append(Text.from_markup(f"[bold blue]user[/]  {text[:300]}{'…' if len(text) > 300 else ''}"))
                 elif role == "bot":
-                    parts.append(Markdown(text))
+                    parts.append(Text(text))
                 elif role == "system":
                     parts.append(Text.from_markup(f"[dim italic]{text}[/]"))
-                parts.append("")
+                parts.append(Text(""))
             content = Text("\n").join(parts)
         return Panel(content, title="Conversation", border_style="green")
 

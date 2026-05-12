@@ -202,7 +202,7 @@ pytest
 Dual-licensed under [AGPL-3.0](../LICENSE.md) (open source) and commercial license (enterprise).
 
 - **Personal/Research**: Free under AGPL
-- **SaaS/Commercial**: Contact [hiimju9@gmail.com](mailto:hiimju9@gmail.com) for licensing
+- **SaaS/Commercial**: Contact [hiimju3@icloud.com](mailto:hiimju3@icloud.com) for licensing
 
 ---
 
@@ -212,6 +212,6 @@ DRIFT was created by **Julien James**.
 
 - [Repository](https://github.com/timeless-hayoka/drift)
 - [Documentation tree](https://github.com/timeless-hayoka/drift/tree/main/docs)
-- [Email](mailto:hiimju9@gmail.com)
+- [Email](mailto:hiimju3@icloud.com)
 
 > *"To be a genuine, growing companion."*

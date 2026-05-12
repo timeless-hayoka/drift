@@ -10,9 +10,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-VALUES_DB = PROJECT_ROOT / "values.db"
+VALUES_DB = DATA_DIR / "values.db"
 
 # Core value dimensions that can emerge
 VALUE_DIMENSIONS = [

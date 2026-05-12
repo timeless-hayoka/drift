@@ -13,9 +13,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-SCHEDULER_DB = PROJECT_ROOT / "scheduler.db"
+SCHEDULER_DB = DATA_DIR / "scheduler.db"
 
 
 @dataclass

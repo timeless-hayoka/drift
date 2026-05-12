@@ -12,9 +12,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-FIELD_DB = PROJECT_ROOT / "emotional_field.db"
+FIELD_DB = DATA_DIR / "emotional_field.db"
 
 
 @dataclass

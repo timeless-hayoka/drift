@@ -55,7 +55,7 @@ class InnerVoice:
         self.thought_history: List[str] = []
         self.max_history = 50
 
-    def generate_stream(self, memory_fragments: List[str] = None) -> str:
+    def generate_stream(self, memory_fragments: Optional[List[str]] = None) -> str:
         """Generate a single thought from the stream of consciousness."""
         being = get_being()
         mood = being.state.mood

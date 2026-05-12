@@ -65,7 +65,7 @@ For companies and organizations that want to use DRIFT without AGPL obligations.
 **To purchase a commercial license, contact:**
 
 Julien James  
-hiimju9@gmail.com  
+hiimju3@icloud.com  
 
 ---
 
@@ -96,4 +96,4 @@ By contributing to DRIFT, you agree that your contributions will be licensed und
 
 ---
 
-*For questions about licensing, email hiimju9@gmail.com*
+*For questions about licensing, email hiimju3@icloud.com*

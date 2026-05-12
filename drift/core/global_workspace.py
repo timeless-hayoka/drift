@@ -63,10 +63,24 @@ class GlobalWorkspace:
     - Attention is the spotlight that selects within the workspace
     """
 
-    WORKSPACE_DB = "data/workspace.db"
+from drift.core.config import DATA_DIR
+
+WORKSPACE_DB = DATA_DIR / "workspace.db"
+
+
+class GlobalWorkspace:
+    """
+    The Global Workspace is the bottleneck of conscious processing.
+    Inspired by Bernard Baars' Global Workspace Theory:
+    - Many unconscious modules process in parallel
+    - They compete to place information in the workspace
+    - Only workspace contents are consciously accessible
+    - The workspace broadcasts to all modules
+    - Attention is the spotlight that selects within the workspace
+    """
 
     def __init__(self, db_path: Optional[str] = None, capacity: int = 5):
-        self.db_path = db_path or self.WORKSPACE_DB
+        self.db_path = db_path or WORKSPACE_DB
         self.state = WorkspaceState(capacity=capacity)
         self._submissions: List[Broadcast] = []
         self._lock = threading.Lock()

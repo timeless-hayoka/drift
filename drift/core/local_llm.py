@@ -9,7 +9,7 @@ from drift.core.config import DRIFT_LOCAL_MODEL, OLLAMA_HOST
 try:
     import ollama
 except Exception:
-    ollama = None
+    ollama = None  # type: ignore[assignment]
 
 
 class LocalLLMError(Exception):
@@ -42,6 +42,7 @@ class OllamaBridge:
         if not self.is_available():
             return []
         try:
+            assert self._client is not None
             resp = self._client.list()
             models = resp.get("models", [])
             return [m.get("model", m.get("name", "unknown")) for m in models]
@@ -61,6 +62,7 @@ class OllamaBridge:
             raise LocalLLMError("Ollama is not available.")
         m = model or self.model
         try:
+            assert self._client is not None
             resp = self._client.chat(
                 model=m,
                 messages=messages,
@@ -68,6 +70,8 @@ class OllamaBridge:
                 options={"temperature": temperature},
             )
             return resp["message"]["content"]
+        except LocalLLMError:
+            raise
         except Exception as exc:
             raise LocalLLMError(f"Ollama chat failed: {exc}")
 
@@ -83,6 +87,7 @@ class OllamaBridge:
             raise LocalLLMError("Ollama is not available.")
         m = model or self.model
         try:
+            assert self._client is not None
             stream = self._client.chat(
                 model=m,
                 messages=messages,
@@ -93,6 +98,8 @@ class OllamaBridge:
                 text = chunk["message"]["content"]
                 if text:
                     yield text
+        except LocalLLMError:
+            raise
         except Exception as exc:
             raise LocalLLMError(f"Ollama stream failed: {exc}")
 
@@ -109,6 +116,7 @@ class OllamaBridge:
             raise LocalLLMError("Ollama is not available.")
         m = model or self.model
         try:
+            assert self._client is not None
             resp = self._client.generate(
                 model=m,
                 prompt=prompt,
@@ -117,6 +125,8 @@ class OllamaBridge:
                 options={"temperature": temperature},
             )
             return resp["response"]
+        except LocalLLMError:
+            raise
         except Exception as exc:
             raise LocalLLMError(f"Ollama generate failed: {exc}")
 
@@ -131,6 +141,7 @@ class OllamaBridge:
             raise LocalLLMError("Ollama is not available.")
         m = model or self.model
         try:
+            assert self._client is not None
             stream = self._client.generate(
                 model=m,
                 prompt=prompt,
@@ -142,6 +153,8 @@ class OllamaBridge:
                 text = chunk.get("response", "")
                 if text:
                     yield text
+        except LocalLLMError:
+            raise
         except Exception as exc:
             raise LocalLLMError(f"Ollama generate stream failed: {exc}")
 

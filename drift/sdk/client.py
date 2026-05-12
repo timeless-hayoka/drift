@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
+from typing import Any, Optional
+
 import httpx
 
 
 class DriftAPIError(Exception):
     """Raised when the DRIFT API returns a non-2xx status code."""
 
-    def __init__(self, message: str, status_code: int = None, response_body: dict = None):
+    def __init__(self, message: str, status_code: Optional[int] = None, response_body: Optional[dict] = None):
         super().__init__(message)
         self.status_code = status_code
         self.response_body = response_body
@@ -57,7 +59,7 @@ class DriftClient:
             raise DriftAPIError(
                 message=f"DRIFT API error: {response.status_code} {response.reason_phrase}",
                 status_code=response.status_code,
-                response_body=body,
+                response_body=body if isinstance(body, dict) else None,
             )
 
         # Some endpoints (e.g. health) may return empty bodies on 204.
@@ -82,7 +84,7 @@ class DriftClient:
         dict
             The cognitive cycle result (output, state delta, etc.).
         """
-        payload = {"agent_id": agent_id, "input": input}
+        payload: dict[str, Any] = {"agent_id": agent_id, "input": input}
         if context:
             payload["context"] = context
         return self._request("POST", "/v1/cycle", json=payload)

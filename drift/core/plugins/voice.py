@@ -80,9 +80,9 @@ def record_to_file(path: str, duration: float = 5.0):
 
 def transcribe(audio_path: str) -> str:
     """Transcribe an audio file to text."""
-    audio_path = _resolve_audio_path(audio_path)
+    resolved_path = _resolve_audio_path(audio_path)
     model = _get_whisper()
-    segments, _info = model.transcribe(str(audio_path), beam_size=5)
+    segments, _info = model.transcribe(str(resolved_path), beam_size=5)
     return " ".join(segment.text for segment in segments).strip()
 
 
@@ -97,10 +97,10 @@ def synthesize(text: str) -> bytes:
 
 def synthesize_to_file(text: str, path: str):
     """Synthesize text to a WAV file."""
-    path = _resolve_audio_path(path, must_exist=False)
-    path.parent.mkdir(parents=True, exist_ok=True)
+    out_path = _resolve_audio_path(path, must_exist=False)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     voice = _get_piper()
-    with wave.open(str(path), "wb") as wav:
+    with wave.open(str(out_path), "wb") as wav:
         voice.synthesize_wav(text, wav)
 
 

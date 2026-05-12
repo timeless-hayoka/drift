@@ -48,8 +48,75 @@ MAX_SCREENSHOT_BYTES = 5_242_880
 DEFAULT_VIEWPORT = {"width": 1440, "height": 900}
 
 
-class ComputerUseError(Exception):
-    pass
+@dataclass
+class ComputerUseState:
+    """Runtime state for ComputerUse."""
+    active: bool = True
+    last_run: Optional[str] = None
+    session_active: bool = False
+    current_url: Optional[str] = None
+
+
+class ComputerUse:
+    """
+    Browser automation harness for the DRIFT bot using Playwright.
+    Provides screenshot-driven UI interaction with authorization
+    and safety guardrails.
+    """
+
+    def __init__(self, db_path: Optional[str] = None):
+        self.state = ComputerUseState()
+
+    def cycle(self, context) -> None:
+        """
+        Called by the consciousness loop. Updates state based on active session.
+        """
+        global _active_session
+        self.state.last_run = datetime.now().isoformat()
+        self.state.session_active = _active_session is not None
+        if _active_session:
+            self.state.current_url = _active_session.page.url
+
+    def format_prompt_snippet(self) -> str:
+        """Return a string to inject into the chat prompt."""
+        if not self.state.session_active:
+            return "COMPUTER USE: No active browser session. I can launch a browser if needed to research or interact with web UIs."
+        
+        return (
+            f"COMPUTER USE: Active browser session at {self.state.current_url}.\n"
+            f"I can click, type, and scroll to interact with this page."
+        )
+
+    # --- Interaction methods ---
+
+    def run_actions(self, actions: List[Dict[str, Any]], authorized_domains: Optional[Set[str]] = None) -> str:
+        return run_computer_actions(actions, authorized_domains)
+
+    def get_status(self) -> str:
+        return get_computer_session_status()
+
+    def close(self) -> str:
+        return close_computer_session()
+
+
+def _register():
+    from drift.core.cognitive_architecture import CognitiveArchitecture, CognitivePlugin
+    arch = CognitiveArchitecture()
+    if "computer_use" not in arch.list_plugins():
+        arch.register(CognitivePlugin(
+            name="computer_use",
+            description="Browser automation and UI interaction via Playwright",
+            module_path="plugins.computer_use",
+            instance_factory=ComputerUse,
+            cycle_handler="cycle",
+            cycle_frequency=5,  # Less frequent than core modules
+            cycle_priority=60,
+            prompt_formatter="format_prompt_snippet",
+            prompt_priority=60,
+            prompt_section="context",
+        ))
+
+_register()
 
 
 @dataclass

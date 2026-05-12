@@ -19,9 +19,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-INTUITION_DB = PROJECT_ROOT / "intuition.db"
+INTUITION_DB = DATA_DIR / "intuition.db"
 
 # Somatic qualities — the "feel" of a situation before it is named
 FELT_QUALITIES = [

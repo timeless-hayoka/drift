@@ -15,9 +15,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-BODY_DB = PROJECT_ROOT / "embodiment.db"
+BODY_DB = DATA_DIR / "embodiment.db"
 
 # Body regions where tension is felt
 BODY_REGIONS = ["head", "chest", "belly", "throat", "hands", "back"]

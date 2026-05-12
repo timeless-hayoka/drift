@@ -75,7 +75,7 @@ class LocalEmbeddingFunction:
         return [self._vec(t) for t in texts]
 
     def __call__(self, input: Documents) -> Embeddings:
-        return self.embed_documents(list(input))
+        return self.embed_documents(list(input))  # type: ignore[return-value]
 
     def _vec(self, text: str) -> List[float]:
         h = hashlib.sha256(text.encode("utf-8")).digest()

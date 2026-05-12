@@ -9,9 +9,9 @@ import sqlite3
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-PREFS_DB = PROJECT_ROOT / "preferences.db"
+PREFS_DB = DATA_DIR / "preferences.db"
 
 DEFAULT_PREFS = {
     "communication_style": "warm and analytical",  # casual, formal, technical, warm, direct

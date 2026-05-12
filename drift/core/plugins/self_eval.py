@@ -10,9 +10,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-EVAL_DB = PROJECT_ROOT / "self_eval.db"
+EVAL_DB = DATA_DIR / "self_eval.db"
 
 # Hallucination markers — heuristic patterns that suggest uncertain claims
 HALLUCINATION_MARKERS = [
@@ -93,7 +93,7 @@ class SelfEvaluator:
                 ),
             )
             conn.commit()
-            return cur.lastrowid
+            return cur.lastrowid or 0
 
     def recent_stats(self, limit: int = 50) -> Dict[str, Any]:
         """Return aggregate stats over recent evaluations."""

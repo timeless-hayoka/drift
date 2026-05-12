@@ -38,14 +38,14 @@ def _chunk_text(text: str, chunk_size: int = 800, overlap: int = 100) -> List[st
     """Split text into overlapping chunks by paragraphs."""
     paragraphs = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
     chunks = []
-    current = []
+    current: List[str] = []
     current_len = 0
     for para in paragraphs:
         para_len = len(para)
         if current_len + para_len > chunk_size and current:
             chunks.append("\n\n".join(current))
             # Keep overlap
-            overlap_text = []
+            overlap_text: List[str] = []
             overlap_len = 0
             for p in reversed(current):
                 if overlap_len + len(p) > overlap:
@@ -87,7 +87,7 @@ def _read_file(path: Path) -> str:
 class DocumentStore:
     def __init__(self, persist_directory=None, embedding_function=None, use_semantic=True):
         if persist_directory is None:
-            persist_directory = str(PROJECT_ROOT / "chroma_db")
+            persist_directory = str(DATA_DIR / "chroma_db")
         if embedding_function is None:
             if use_semantic:
                 embedding_function = get_default_embedding_function()

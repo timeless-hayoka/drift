@@ -103,15 +103,15 @@ def _load_classifier():
 def _detect_transformer(text: str) -> Dict:
     clf = _load_classifier()
     if clf is False:
-        return None
+        return {}
     raw = clf(text)[0]  # list of dicts
     # Sort by score descending
     raw = sorted(raw, key=lambda x: x["score"], reverse=True)
     top = raw[0]
     secondary = raw[1] if len(raw) > 1 else {"label": "neutral", "score": 0.0}
 
-    label = _MODEL_TO_LABEL.get(top["label"], "neutral")
-    sec_label = _MODEL_TO_LABEL.get(secondary["label"], "neutral")
+    label = _MODEL_TO_LABEL.get(str(top["label"]), "neutral")
+    sec_label = _MODEL_TO_LABEL.get(str(secondary["label"]), "neutral")
 
     # Weighted valence/arousal from top-3 predictions
     valence = 0.0

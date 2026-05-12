@@ -21,14 +21,14 @@ import sqlite3
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-HOMEOSTASIS_DB = PROJECT_ROOT / "homeostasis.db"
+HOMEOSTASIS_DB = DATA_DIR / "homeostasis.db"
 
 # Need definitions with setpoints and critical thresholds
-NEED_DEFINITIONS = {
+NEED_DEFINITIONS: Dict[str, Dict[str, Any]] = {
     "energy": {
         "setpoint": 0.6,
         "critical_low": 0.15,
@@ -159,7 +159,7 @@ class HomeostaticRegulator:
         self.crisis_mode = False
         self.crisis_count = 0
         self.allostatic_load = 0.0
-        self.survival_narrative = []
+        self.survival_narrative: List[str] = []
         self.last_regulation_action = ""
 
     # ── Database ────────────────────────────────────────────────────

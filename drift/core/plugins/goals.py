@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-DB_PATH = PROJECT_ROOT / "goals.db"
+DB_PATH = DATA_DIR / "goals.db"
 
 
 def _get_db() -> sqlite3.Connection:

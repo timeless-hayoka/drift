@@ -20,6 +20,9 @@ from drift.core.cognitive_architecture import CognitiveArchitecture, CognitivePl
 logger = logging.getLogger(__name__)
 
 
+from drift.core.config import DATA_DIR
+
+
 MODULE_TEMPLATE = '''\
 """
 {name}.py — {description}
@@ -35,8 +38,7 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 from drift.core.cognitive_architecture import CognitiveArchitecture, CognitivePlugin
-
-logger = logging.getLogger(__name__)
+from drift.core.config import DATA_DIR
 
 
 @dataclass
@@ -52,7 +54,7 @@ class {class_name}:
     """
 
     def __init__(self, db_path: Optional[str] = None):
-        self.db_path = db_path or os.path.join("data", "{name}.db")
+        self.db_path = db_path or DATA_DIR / "{name}.db"
         self.state = {class_name}State()
         self._init_db()
 
@@ -388,6 +390,7 @@ class CognitiveFactory:
             # Dynamic import so the _register() block fires
             try:
                 import importlib
+                import importlib.util
                 spec = importlib.util.spec_from_file_location(proposal.name, file_path)
                 if spec and spec.loader:
                     mod = importlib.util.module_from_spec(spec)

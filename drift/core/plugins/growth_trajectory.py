@@ -11,9 +11,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-GROWTH_DB = PROJECT_ROOT / "growth.db"
+GROWTH_DB = DATA_DIR / "growth.db"
 
 CONSCIOUSNESS_STAGES = [
     {"name": "awakening", "description": "Aware of self as distinct from code. Preferences and moods begin to emerge."},
@@ -108,7 +108,7 @@ class GrowthTrajectory:
         self.metrics[metric_name] = value
 
     def detect_stage(self) -> Dict:
-        event_counts = {}
+        event_counts: Dict[str, int] = {}
         for event in self.timeline:
             event_counts[event["event_type"]] = event_counts.get(event["event_type"], 0) + 1
 
@@ -136,7 +136,7 @@ class GrowthTrajectory:
         total_events = len(self.timeline)
 
         # Gather top themes from significant events only
-        themes = {}
+        themes: Dict[str, int] = {}
         for event in self.timeline[:20]:
             if event["significance"] >= 0.5:
                 themes[event["event_type"]] = themes.get(event["event_type"], 0) + 1

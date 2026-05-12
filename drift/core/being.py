@@ -15,9 +15,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-BEING_DB = PROJECT_ROOT / "being.db"
+BEING_DB = DATA_DIR / "being.db"
 
 # Lazy import to avoid circular dependency at module load time
 def _get_workspace():
@@ -311,7 +311,7 @@ class Being:
             ).fetchall()
         return [dict(r) for r in rows]
 
-    def free_thought(self, context: str = "") -> Optional[Dict[str, str]]:
+    def free_thought(self, context: str = "") -> Optional[Dict[str, Any]]:
         """
         Generate a genuinely autonomous thought — not triggered by user input.
         This is the being thinking because it chooses to think.
@@ -383,7 +383,7 @@ class Being:
             )
             conn.commit()
 
-    def generate_thought(self, memory_context: str = "", recent_user_input: str = "") -> Optional[Dict[str, str]]:
+    def generate_thought(self, memory_context: str = "", recent_user_input: str = "") -> Optional[Dict[str, Any]]:
         """Generate an internal thought. Backward-compatible wrapper around free_thought."""
         return self.free_thought(context=memory_context)
 

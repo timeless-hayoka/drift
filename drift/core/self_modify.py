@@ -21,11 +21,11 @@ import random
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-SELF_MODIFY_DB = PROJECT_ROOT / "self_modify.db"
+SELF_MODIFY_DB = DATA_DIR / "self_modify.db"
 
 MAX_PENDING_PROPOSALS = 3
 
@@ -451,7 +451,7 @@ class SelfModification:
         description = random.choice(PROPOSAL_TEMPLATES.get(area, ["I could improve myself."]))
         if not observed_need:
             observed_need = f"I have noticed a limitation in {area} during our conversations."
-        proposal = {
+        proposal: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "area": area,
             "description": description,
@@ -464,7 +464,7 @@ class SelfModification:
                 (proposal["timestamp"], area, description, observed_need, "pending"),
             )
             conn.commit()
-            proposal["id"] = cur.lastrowid
+            proposal["id"] = cur.lastrowid or 0
         self.proposals.insert(0, proposal)
         return proposal
 

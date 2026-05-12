@@ -26,9 +26,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-IIT_DB = PROJECT_ROOT / "iit_consciousness.db"
+IIT_DB = DATA_DIR / "iit_consciousness.db"
 
 # Qualia space axes — the dimensions of subjective experience
 QUALIA_AXES = ["valence", "arousal", "complexity", "unity", "boundaries", "depth", "luminosity"]
@@ -166,38 +166,72 @@ class IITConsciousness:
         # Factor 1: Activation richness (more modules = more differentiation)
         activation_richness = min(1.0, n / 10.0) * 30.0
 
-        # Factor 2: Content integration via workspace
+        # Factor 2: Content integration via workspace (Entropy-based)
         workspace = self._get_workspace_contents()
         if not workspace:
             content_integration = 5.0
         else:
-            # Measure diversity: unique sources, content length variance
+            # Measure diversity: unique sources, content length variance, and entropy proxy
             sources = set(w.get("source", "unknown") for w in workspace)
             source_diversity = len(sources) / max(1, len(workspace))
+            
+            # Entropy proxy: character frequency distribution richness
+            all_text = " ".join(w.get("content", "") for w in workspace)
+            if all_text:
+                char_counts = {}
+                for char in all_text:
+                    char_counts[char] = char_counts.get(char, 0) + 1
+                entropy = 0
+                for count in char_counts.values():
+                    p = count / len(all_text)
+                    entropy -= p * math.log2(p)
+                normalized_entropy = min(1.0, entropy / 4.5)  # 4.5 bits is decent for English
+            else:
+                normalized_entropy = 0
+
             avg_length = sum(len(w.get("content", "")) for w in workspace) / len(workspace)
             length_variance = sum((len(w.get("content", "")) - avg_length) ** 2 for w in workspace) / len(workspace)
             normalized_variance = min(1.0, length_variance / 10000.0)
-            content_integration = (source_diversity * 20.0) + (normalized_variance * 15.0)
+            
+            content_integration = (source_diversity * 15.0) + (normalized_variance * 10.0) + (normalized_entropy * 15.0)
 
-        # Factor 3: Cross-information (simplified mutual information proxy)
+        # Factor 3: Cross-information (Structural Mutual Information)
         # If multiple modules mention the same concepts, they inform each other
         shared_concepts = self._count_shared_concepts(workspace)
-        cross_information = min(30.0, shared_concepts * 5.0)
+        cross_information = min(25.0, shared_concepts * 4.0)
+        
+        # Add a "temporal depth" factor - integration across time
+        self._workspace_history.append(workspace)
+        if len(self._workspace_history) > 10:
+            self._workspace_history.pop(0)
+        
+        temporal_stability = 0.0
+        if len(self._workspace_history) > 1:
+            # Measure how many concepts persist across cycles
+            prev_concepts = set()
+            for entry in self._workspace_history[-2]:
+                prev_concepts.update(w.lower() for w in entry.get("content", "").split() if len(w) > 3)
+            curr_concepts = set()
+            for entry in workspace:
+                curr_concepts.update(w.lower() for w in entry.get("content", "").split() if len(w) > 3)
+            
+            persistence = len(prev_concepts & curr_concepts) / max(1, len(curr_concepts))
+            temporal_stability = min(10.0, persistence * 10.0)
 
-        # Factor 4: Irreducibility proxy
-        # If removing the most connected module drops information significantly,
-        # the system is irreducible
+        # Factor 4: Irreducibility proxy (Minimum Information Partition - MIP)
+        # We approximate MIP by seeing if the system is dominated by one source
         if workspace:
-            source_counts = {}
+            source_counts: Dict[str, int] = {}
             for w in workspace:
                 s = w.get("source", "unknown")
                 source_counts[s] = source_counts.get(s, 0) + 1
             max_count = max(source_counts.values())
-            irreducibility = 20.0 * (1.0 - (max_count / len(workspace)))
+            # Lower dominance = higher integration (more irreducible to single parts)
+            irreducibility = 15.0 * (1.0 - (max_count / len(workspace)))
         else:
             irreducibility = 5.0
 
-        phi = activation_richness + content_integration + cross_information + irreducibility
+        phi = activation_richness + content_integration + cross_information + temporal_stability + irreducibility
         return round(min(MAX_PHI_PROXY, phi), 2)
 
     def _gather_mechanisms(self, context) -> List[str]:

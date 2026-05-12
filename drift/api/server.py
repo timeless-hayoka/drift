@@ -53,6 +53,7 @@ async def lifespan(app: FastAPI):
     import drift.core.plugins.emotion
     import drift.core.plugins.aspirations
     import drift.core.plugins.dreamer
+    import drift.core.plugins.computer_use
 
     app.state.architecture = arch
     app.state.started_at = time.time()

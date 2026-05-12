@@ -13,7 +13,7 @@ import traceback
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Awaitable, Callable, Dict, List, Optional
 
 logger = logging.getLogger("drift")
 
@@ -90,13 +90,16 @@ class HealthCheck:
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
 
 
+from drift.core.config import DATA_DIR
+
+HEALTH_DB = DATA_DIR / "health.db"
+
+
 class HealthMonitor:
     """Monitors the health of cognitive modules and subsystems."""
 
-    HEALTH_DB = "data/health.db"
-
     def __init__(self, db_path: Optional[str] = None):
-        self.db_path = db_path or self.HEALTH_DB
+        self.db_path = db_path or HEALTH_DB
         self._checks: Dict[str, Callable[[], HealthCheck]] = {}
         self._history: List[HealthCheck] = []
         self._max_history = 500
@@ -223,7 +226,7 @@ class ResilienceManager:
             self.breakers[name] = CircuitBreaker(name=name)
         return self.breakers[name]
 
-    async def execute(self, name: str, coro: Callable, fallback: Any = None):
+    async def execute(self, name: str, coro: Awaitable[Any], fallback: Any = None):
         """Execute a coroutine with circuit breaker protection."""
         breaker = self.get_breaker(name)
         if not breaker.can_execute():

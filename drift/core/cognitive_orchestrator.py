@@ -36,7 +36,7 @@ class CognitiveEventBus:
             self._subscribers[event_type] = []
         self._subscribers[event_type].append(handler)
 
-    def publish(self, event_type: str, payload: Dict = None, source: str = None):
+    def publish(self, event_type: str, payload: Optional[Dict] = None, source: Optional[str] = None):
         """Publish an event to all subscribers."""
         event = {
             "type": event_type,
@@ -421,7 +421,7 @@ Use this to clarify inner conflict without pathologizing it.
 
     def get_phase_status(self) -> Dict[str, List[str]]:
         """Return which plugins are active in each phase."""
-        status = {}
+        status: Dict[str, List[str]] = {}
         for phase_name, plugin_names in self.PHASES.items():
             status[phase_name] = []
             for name in plugin_names:

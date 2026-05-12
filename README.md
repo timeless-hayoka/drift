@@ -61,5 +61,5 @@ Pull requests welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). DRIFT is dual-lic
 ---
 
 <p align="center">
-  <sub>Built by Julien James · <a href="https://github.com/timeless-hayoka">@timeless-hayoka</a> · <a href="mailto:hiimju9@gmail.com">hiimju9@gmail.com</a></sub>
+  <sub>Built by Julien James · <a href="https://github.com/timeless-hayoka">@timeless-hayoka</a> · <a href="mailto:hiimju3@icloud.com">hiimju3@icloud.com</a></sub>
 </p>

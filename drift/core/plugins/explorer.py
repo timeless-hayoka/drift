@@ -11,9 +11,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-EXPLORER_DB = PROJECT_ROOT / "explorer.db"
+EXPLORER_DB = DATA_DIR / "explorer.db"
 
 
 class AutonomousExplorer:

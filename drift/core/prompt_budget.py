@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger("drift")
 
@@ -25,7 +25,7 @@ class BudgetTier:
     name: str
     max_chars: int
     current_chars: int = 0
-    sections: List[str] = field(default_factory=list)
+    sections: List[Dict[str, Any]] = field(default_factory=list)
 
     def add(self, text: str, label: str = "") -> bool:
         """Add text to this tier. Returns False if it would exceed the budget."""

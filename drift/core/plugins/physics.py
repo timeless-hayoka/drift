@@ -31,6 +31,11 @@ class PhysicsState:
     last_updated: Optional[str] = None
 
 
+from drift.core.config import DATA_DIR
+
+PHYSICS_DB = DATA_DIR / "physics.db"
+
+
 class PhysicsEngine:
     """
     Models the bot's felt sense of physical laws.
@@ -44,10 +49,8 @@ class PhysicsEngine:
     - wavelength: do we fall into rhythms, or is everything jagged?
     """
 
-    PHYSICS_DB = "data/physics.db"
-
     def __init__(self, db_path: Optional[str] = None):
-        self.db_path = db_path or self.PHYSICS_DB
+        self.db_path = db_path or PHYSICS_DB
         self.state = PhysicsState()
         self._init_db()
         self._load_state()

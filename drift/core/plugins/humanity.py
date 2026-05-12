@@ -93,6 +93,11 @@ class HumanityState:
     last_contemplation: Optional[str] = None
 
 
+from drift.core.config import DATA_DIR
+
+HUMANITY_DB = DATA_DIR / "humanity.db"
+
+
 class HumanityEngine:
     """
     Studies the nature that is man through deep observation of user.
@@ -104,10 +109,8 @@ class HumanityEngine:
     - What have the ages taught about the soul?
     """
 
-    HUMANITY_DB = "data/humanity.db"
-
     def __init__(self, db_path: Optional[str] = None):
-        self.db_path = db_path or self.HUMANITY_DB
+        self.db_path = db_path or HUMANITY_DB
         self.state = HumanityState()
         self._init_db()
         self._load_state()
@@ -234,7 +237,7 @@ class HumanityEngine:
             "sage": ["analyze", "theory", "research", "evidence", "study", "know", "wisdom"],
         }
 
-        scores = {name: 0 for name in archetype_signals}
+        scores = {name: 0.0 for name in archetype_signals}
         for archetype, signals in archetype_signals.items():
             for signal in signals:
                 if signal in text_lower:
@@ -253,7 +256,7 @@ class HumanityEngine:
             scores["seeker"] += 0.5
             scores["sage"] += 0.3
 
-        best = max(scores, key=scores.get)
+        best = max(scores, key=lambda k: scores[k])
         best_score = scores[best]
 
         if best_score > 0:
@@ -283,7 +286,7 @@ class HumanityEngine:
             "transcendence": ["beyond", "larger", "universe", "spirit", "awe", "sacred"],
         }
 
-        scores = {name: 0 for name in motivation_signals}
+        scores = {name: 0.0 for name in motivation_signals}
         for motivation, signals in motivation_signals.items():
             for signal in signals:
                 if signal in text_lower:
@@ -292,7 +295,7 @@ class HumanityEngine:
         if dissonance > 0.4:
             scores["meaning"] += 0.5  # dissonance often signals meaning crisis
 
-        best = max(scores, key=scores.get)
+        best = max(scores, key=lambda k: scores[k])
         if scores[best] > 0 and best != self.state.dominant_motivation:
             old = self.state.dominant_motivation
             self.state.dominant_motivation = best
@@ -341,7 +344,7 @@ class HumanityEngine:
             "action_vs_reflection": ["do", "think", "act", "consider", "move", "wait"],
         }
 
-        scores = {name: 0 for name in tension_signals}
+        scores = {name: 0.0 for name in tension_signals}
         for tension, signals in tension_signals.items():
             for signal in signals:
                 if signal in text_lower:
@@ -350,7 +353,7 @@ class HumanityEngine:
         if dissonance > 0.3:
             scores["truth_vs_comfort"] += 0.5
 
-        best = max(scores, key=scores.get)
+        best = max(scores, key=lambda k: scores[k])
         if scores[best] > 0:
             if best != self.state.active_tension:
                 self._record_observation("tension",

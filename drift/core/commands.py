@@ -107,12 +107,6 @@ def command_help(command=None):
         return "/correct <feedback> — tell the bot what it got wrong so it can learn."
     if command == "eval":
         return "/eval — show recent self-evaluation stats."
-    if command == "voice":
-        return "/voice — toggle voice mode (TTS for bot responses)."
-    if command == "listen":
-        return "/listen [seconds] — record audio and transcribe to text."
-    if command == "speak":
-        return "/speak <text> — synthesize speech from text."
     if command == "mood":
         return "/mood — show the bot's current emotional state."
     if command == "thoughts":
@@ -185,9 +179,6 @@ def command_help(command=None):
 /pref set|unset|add|remove <key> [value]
 /correct <feedback>
 /eval
-/voice
-/listen [seconds]
-/speak <text>
 /mood
 /thoughts
 /whoareyou
@@ -668,41 +659,6 @@ def handle_pref_command(args, state):
     return "Unknown preference action. Use set, unset, add, or remove."
 
 
-def handle_voice_command(state):
-    state.prefs.set("voice_mode", not state.prefs.get("voice_mode"))
-    status = "ON" if state.prefs.get("voice_mode") else "OFF"
-    return f"Voice mode: {status}. Bot responses will {'be spoken' if status == 'ON' else 'be text-only'}."
-
-
-def handle_listen_command(args, state):
-    try:
-        seconds = float(args.strip()) if args.strip() else 5.0
-    except ValueError:
-        seconds = 5.0
-    seconds = max(1.0, min(seconds, 30.0))
-    try:
-        from drift.core.plugins.voice import record_audio, transcribe
-        import tempfile
-        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
-            f.write(record_audio(duration=seconds))
-            f.flush()
-            text = transcribe(f.name)
-        return f"[Heard]: {text}" if text else "[No speech detected]"
-    except Exception as exc:
-        return f"[error: voice recording failed: {exc}]"
-
-
-def handle_speak_command(args, state):
-    if not args:
-        return command_help("speak")
-    try:
-        from drift.core.plugins.voice import speak, play_audio
-        wav = speak(args.strip())
-        if wav:
-            play_audio(wav)
-        return "[Spoke text]"
-    except Exception as exc:
-        return f"[error: speech synthesis failed: {exc}]"
 
 
 def handle_eval_command(brain):
@@ -1410,12 +1366,6 @@ def handle_command(command, args, state, brain, memory, history=None, goals_db=N
         return handle_correct_command(args, state)
     if command == "eval":
         return handle_eval_command(brain)
-    if command == "voice":
-        return handle_voice_command(state)
-    if command == "listen":
-        return handle_listen_command(args, state)
-    if command == "speak":
-        return handle_speak_command(args, state)
     if command == "mood":
         return handle_mood_command()
     if command == "thoughts":

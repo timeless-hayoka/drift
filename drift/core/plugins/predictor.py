@@ -12,9 +12,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-PREDICTOR_DB = PROJECT_ROOT / "predictor.db"
+PREDICTOR_DB = DATA_DIR / "predictor.db"
 
 # Signals that often precede stress
 STRESS_SIGNALS = [
@@ -272,7 +272,7 @@ class PredictiveNeeds:
             basis.append("gaps between sessions growing")
 
         # Topic-based prediction
-        recent_topics = []
+        recent_topics: List[str] = []
         for p in patterns[:5]:
             recent_topics.extend(p["topics"].split(",") if p["topics"] else [])
         recent_topics = [t for t in recent_topics if t]

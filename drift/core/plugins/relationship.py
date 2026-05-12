@@ -10,9 +10,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-RELATIONSHIP_DB = PROJECT_ROOT / "relationship.db"
+RELATIONSHIP_DB = DATA_DIR / "relationship.db"
 
 RELATIONSHIP_STAGES = [
     (0, "stranger", "We are just beginning to know each other."),

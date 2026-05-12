@@ -9,9 +9,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-METACOGNITION_DB = PROJECT_ROOT / "metacognition.db"
+METACOGNITION_DB = DATA_DIR / "metacognition.db"
 
 COGNITIVE_PATTERNS = {
     "over_certainty": "I notice I state things as facts when they are inferences.",

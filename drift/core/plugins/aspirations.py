@@ -10,9 +10,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from drift.core.config import PROJECT_ROOT
+from drift.core.config import DATA_DIR
 
-ASPIRATIONS_DB = PROJECT_ROOT / "aspirations.db"
+ASPIRATIONS_DB = DATA_DIR / "aspirations.db"
 
 # Core purpose — non-negotiable, stable across all aspirations
 CORE_PURPOSE = (
