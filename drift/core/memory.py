@@ -14,6 +14,13 @@ from drift.core.embeddings import (
     SemanticEmbeddingFunction,
 )
 
+# PSC V4 DMU — optional weighted retrieval
+try:
+    from drift.core.dmu import DMURetriever
+    _DMU_AVAILABLE = True
+except ImportError:
+    _DMU_AVAILABLE = False
+
 
 # ── Secret scrubbing ──────────────────────────────────────────────
 # Patterns are ordered from most specific to least specific.
@@ -79,6 +86,16 @@ class DriftMemory:
             name=self.collection_name,
             embedding_function=self.embedding_function,
         )
+        self._dmu = None
+        if _DMU_AVAILABLE:
+            try:
+                self._dmu = DMURetriever(
+                    chroma_collection=self.collection,
+                    psc_engine=None,
+                    max_retrieval_count=200,
+                )
+            except Exception:
+                pass
 
     def scrub_text(self, text: str) -> str:
         """Redact secrets from text, with allowlist protection."""
@@ -237,8 +254,34 @@ class DriftMemory:
         records.sort(key=lambda record: record[1].get("timestamp", ""), reverse=True)
         return records[:limit]
 
+    def set_psc_engine(self, psc_engine):
+        """Wire PSC engine into DMU for anticipatory memory surfacing."""
+        if self._dmu is not None:
+            self._dmu.psc_engine = psc_engine
+
     def retrieve_context(self, query, n_results=5, include_metadata=False, rerank=True):
-        """Retrieve memory with hybrid reranking (semantic + importance + recency)."""
+        """Retrieve memory with hybrid reranking (semantic + importance + recency).
+        
+        If DMU is wired with a PSC engine, uses predictive salience weighting.
+        """
+        # Try DMU path if available and wired
+        if self._dmu is not None and self._dmu.psc_engine is not None and rerank:
+            try:
+                emb = self.embedding_function([query])[0]
+                dmu_results = self._dmu.retrieve(
+                    query_embedding=emb,
+                    top_k=n_results,
+                    current_cycle=0,
+                )
+                if dmu_results:
+                    documents = [r["document"] for r in dmu_results]
+                    metadatas = [r["metadata"] for r in dmu_results]
+                    if not include_metadata:
+                        return "\n---\n".join(documents)
+                    return list(zip(documents, metadatas))
+            except Exception:
+                pass  # Fall through to standard path
+
         results = self.collection.query(
             query_texts=[query],
             n_results=n_results * 3 if rerank else n_results,

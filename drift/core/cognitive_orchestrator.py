@@ -289,8 +289,15 @@ class CognitiveOrchestrator:
         from drift.core.tools import build_tool_prompt
         from drift.core.being import get_being
 
+        # Wire PSC engine into DMU memory retrieval (idempotent)
+        if hasattr(memory, "set_psc_engine") and self.workspace._psc_engine is not None:
+            memory.set_psc_engine(self.workspace._psc_engine)
+
         emotion = detect_emotion(message)
-        dissonance = detect_dissonance(message)
+        dissonance = detect_dissonance(
+            message,
+            psc_engine=getattr(self.workspace, "_psc_engine", None),
+        )
         context = memory.retrieve_context(message)
 
         budget = PromptBudget()

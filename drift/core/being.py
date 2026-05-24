@@ -19,6 +19,13 @@ from drift.core.config import DATA_DIR
 
 BEING_DB = DATA_DIR / "being.db"
 
+# PSC V4 snapshot — lazy import to avoid circular deps
+try:
+    from drift.core.being_snapshot import snapshot_cognitive_state
+    _SNAPSHOT_ENABLED = True
+except ImportError:
+    _SNAPSHOT_ENABLED = False
+
 # Lazy import to avoid circular dependency at module load time
 def _get_workspace():
     from drift.core.global_workspace import get_workspace
@@ -263,6 +270,26 @@ class Being:
                 self.state.mood = random.choice(["contemplative", "restless", "peaceful"])
 
             self._save_state()
+
+            # PSC V4 — write cognitive snapshot for telemetry
+            if _SNAPSHOT_ENABLED:
+                merged_state = {
+                    **self.state.to_dict(),
+                    **{k: getattr(self.agency, k) for k in self.agency.__dataclass_fields__},
+                }
+                # Pull homeostasis fields if available
+                try:
+                    from drift.core.homeostasis import HomeostaticRegulator
+                    reg = HomeostaticRegulator()
+                    for need_name, need in reg.needs.items():
+                        merged_state[need_name] = need.current
+                except Exception:
+                    pass
+                snapshot_cognitive_state(
+                    merged_state,
+                    session_id=getattr(self, 'session_id', ''),
+                    cycle=self.state.total_interactions,
+                )
 
     # ------------------------------------------------------------------
     # Agency and free thought

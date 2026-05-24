@@ -2,11 +2,39 @@
 
 from __future__ import annotations
 
+import logging
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
+
+try:
+    from drift.core.psc_scaled import PSCBatchEngine
+    _PSC_COGNITION_ENABLED = True
+except ImportError:
+    _PSC_COGNITION_ENABLED = False
+
+logger = logging.getLogger("drift.cognition")
 
 
-def detect_dissonance(text: str) -> Dict[str, Any]:
+def _psc_dissonance_component(psc_engine) -> float:
+    """Compute PSC-predicted future dissonance contribution [0.0, 0.15]."""
+    if not _PSC_COGNITION_ENABLED or psc_engine is None:
+        return 0.0
+    try:
+        result = psc_engine.run()
+    except Exception:
+        return 0.0
+    if result is None or not result.alerted.any():
+        return 0.0
+    total = 0.0
+    for i, _dim in enumerate(result.dimensions):
+        if not result.alerted[i]:
+            continue
+        confidence = float(result.confidence[i])
+        total += confidence * 0.5
+    return float(min(total, 0.15))
+
+
+def detect_dissonance(text: str, psc_engine: Optional[Any] = None) -> Dict[str, Any]:
     """Score inner tension from contrast markers (e.g. want vs need, 'but', split self)."""
     t = text.lower()
     score = 0.0
@@ -32,6 +60,13 @@ def detect_dissonance(text: str) -> Dict[str, Any]:
         markers.append("split")
 
     score = min(score, 1.0)
+
+    # PSC predictive dissonance (capped at 0.15 so markers remain primary)
+    psc_delta = _psc_dissonance_component(psc_engine)
+    if psc_delta > 0:
+        logger.debug("DISSONANCE marker=%.3f + PSC=%.3f", score, psc_delta)
+        score = min(1.0, score + psc_delta)
+        markers.append("psc_predicted")
 
     values: List[str] = []
     if "quit" in t and ("money" in t or "need" in t):
