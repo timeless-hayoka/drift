@@ -15,5 +15,6 @@ All future development, issues, and pull requests regarding the DRIFT cognitive 
 ---
 
 <p align="center">
-  <sub>Built by Julien James · <a href="https://github.com/timeless-hayoka">@timeless-hayoka</a> · <a href="mailto:hiimju3@icloud.com">hiimju3@icloud.com</a></sub>
+  <sub>Built by Julien James · <a href="https://github.com/timeless-hayoka">@timeless-hayoka</a> · <a href="mailto:hiimju3@icloud.com">hiimju3@icloud.com</a></sub><br />
+  <sub>📄 <a href="https://zenodo.org/records/20350249?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImY4MmY1YzdmLWVkMTEtNDlkNS04ZjNkLTY0NjRhYWVlZmFlZCIsImRhdGEiOnt9LCJyYW5kb20iOiJlMzVkYmQzNzU4OTZlNjA4MTM0NmZjNmQxMzVkNTA3NiJ9.-P0iSwkJejIWkKaP7iFN0Zwhh9Zy9dsHTeAbLHa3L0Rn6gvMD-jgmCA7G5OwLYN0vEKEw3SGkB-VcXd672_f_Q">PSC V4 Paper (Zenodo)</a></sub>
 </p>
