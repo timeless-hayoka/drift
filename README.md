@@ -8,13 +8,22 @@
 
 **As of Phase 3 canonical unification, the standalone DRIFT cognitive core has been migrated and directly integrated into the `infj-bot` repository structure (under `core/` and `adapters/`).**
 
-**This repository is now officially retired and archived.** 
+**This repository is now officially retired and archived.**
 
 All future development, issues, and pull requests regarding the DRIFT cognitive architecture should be directed to the main [infj-bot repository](https://github.com/timeless-hayoka/infj-bot).
 
 ---
 
+## 📄 Research Paper
+
+**PHI // DRIFT: A Homeostatic Cognitive Architecture for Persistent, State-Aware AI Companionship**
+
+Published preprint — May 2026
+
+🔗 https://zenodo.org/records/20350249
+
+---
+
 <p align="center">
-  <sub>Built by Julien James · <a href="https://github.com/timeless-hayoka">@timeless-hayoka</a> · <a href="mailto:hiimju3@icloud.com">hiimju3@icloud.com</a></sub><br />
-  <sub>📄 <a href="https://zenodo.org/records/20350249?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6ImY4MmY1YzdmLWVkMTEtNDlkNS04ZjNkLTY0NjRhYWVlZmFlZCIsImRhdGEiOnt9LCJyYW5kb20iOiJlMzVkYmQzNzU4OTZlNjA4MTM0NmZjNmQxMzVkNTA3NiJ9.-P0iSwkJejIWkKaP7iFN0Zwhh9Zy9dsHTeAbLHa3L0Rn6gvMD-jgmCA7G5OwLYN0vEKEw3SGkB-VcXd672_f_Q">PSC V4 Paper (Zenodo)</a></sub>
+  <sub>Built by Julien James · <a href="https://github.com/timeless-hayoka">@timeless-hayoka</a> · <a href="mailto:hiimju3@icloud.com">hiimju3@icloud.com</a></sub>
 </p>
